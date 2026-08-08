@@ -1,0 +1,28 @@
+name: Özellik isteği
+description: Yeni bir özellik veya iyileştirme önerin.
+title: "[Özellik]: "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Tüm platformlar
+        - Linux
+        - Android
+        - Windows
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Çözülecek sorun
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Önerilen çözüm
+    validations:
+      required: true

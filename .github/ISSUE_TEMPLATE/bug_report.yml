@@ -1,0 +1,50 @@
+name: Hata bildirimi
+description: Tekrarlanabilir bir uygulama hatası bildirin.
+title: "[Hata]: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Linux
+        - Android
+        - Windows
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Uygulama sürümü
+      placeholder: 1.0.0-beta.1
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Tekrarlama adımları
+      description: Hatayı oluşturan işlemleri sırasıyla yazın.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Beklenen davranış
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Hata ve loglar
+      description: Kişisel verileri, çerezleri ve hesap bilgilerini kaldırın.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Kontrol
+      options:
+        - label: Aynı hatayı bildiren mevcut kayıtları aradım.
+          required: true
+        - label: Paylaştığım loglarda çerez veya kişisel bilgi yok.
+          required: true

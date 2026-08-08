@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Downloader
+GenericName=Video and Audio Downloader
+Comment=Download manager for video, audio and playlists
+Exec=downloader
+Icon=com.forintx.VideoIndirici
+Terminal=false
+Categories=AudioVideo;
+Keywords=video;audio;youtube;download;yt-dlp;playlist;
+StartupNotify=true
+StartupWMClass=com.forintx.VideoIndirici
+X-GNOME-UsesNotifications=true

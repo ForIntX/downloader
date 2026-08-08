@@ -1,0 +1,60 @@
+name: Android AAB
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: clients/video_indirici_flutter
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.7
+          channel: stable
+          cache: true
+
+      - name: Sürüm numarasını oku
+        shell: bash
+        run: |
+          APP_VERSION=$(sed -n 's/^version: \([^+]*\).*/\1/p' pubspec.yaml)
+          test -n "$APP_VERSION"
+          echo "APP_VERSION=$APP_VERSION" >> "$GITHUB_ENV"
+
+      - name: Play upload anahtarını hazırla
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEY_PROPERTIES: ${{ secrets.ANDROID_KEY_PROPERTIES }}
+        run: |
+          test -n "$KEYSTORE_BASE64"
+          test -n "$KEY_PROPERTIES"
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          echo "$KEY_PROPERTIES" > android/key.properties
+
+      - name: Test, APK ve AAB
+        run: |
+          flutter pub get
+          flutter test
+          dart analyze lib test
+          flutter build apk --release --target-platform android-arm64,android-x64
+          flutter build appbundle --release --target-platform android-arm64,android-x64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: downloader-android-${{ env.APP_VERSION }}
+          path: |
+            clients/video_indirici_flutter/build/app/outputs/flutter-apk/app-release.apk
+            clients/video_indirici_flutter/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
