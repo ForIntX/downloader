@@ -1,0 +1,42 @@
+name: Publish existing release artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to publish
+        required: true
+        type: string
+      run_id:
+        description: Workflow run containing successful platform artifacts
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.run_id }}
+          path: release-assets
+          merge-multiple: true
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          cat "docs/releases/${RELEASE_TAG}.en.md" "docs/releases/${RELEASE_TAG}.md" > release-notes.md
+          mapfile -d '' release_assets < <(find release-assets -type f -print0)
+          test "${#release_assets[@]}" -gt 0
+          gh release create "${RELEASE_TAG}" "${release_assets[@]}" --verify-tag --prerelease --title "Downloader ${RELEASE_TAG}" --notes-file release-notes.md
