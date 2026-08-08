@@ -172,4 +172,6 @@ jobs:
         shell: bash
         run: |
           cat "docs/releases/${RELEASE_TAG}.en.md" "docs/releases/${RELEASE_TAG}.md" > release-notes.md
-          gh release create "${RELEASE_TAG}" release-assets/* --verify-tag --prerelease --title "Downloader ${RELEASE_TAG}" --notes-file release-notes.md
+          mapfile -d '' release_assets < <(find release-assets -type f -print0)
+          test "${#release_assets[@]}" -gt 0
+          gh release create "${RELEASE_TAG}" "${release_assets[@]}" --verify-tag --prerelease --title "Downloader ${RELEASE_TAG}" --notes-file release-notes.md
