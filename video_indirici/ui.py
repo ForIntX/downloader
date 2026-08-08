@@ -77,7 +77,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         self.storage = PersistenceManager()
         self.config = self.storage.load_config()
-        set_language(str(self.config.get("language", "tr")))
+        set_language(str(self.config.get("language", "en")))
         self.history = self.storage.load_history()
         restored_jobs = self.storage.load_queue()
         self.events: queue.Queue[DownloadEvent] = queue.Queue()
@@ -1374,7 +1374,7 @@ class MainWindow(Adw.ApplicationWindow):
 
     def _settings_saved(self, config: dict[str, Any]) -> None:
         self.config = config
-        set_language(str(config.get("language", "tr")))
+        set_language(str(config.get("language", "en")))
         preset_index = next(
             (index for index, preset in enumerate(PRESETS) if preset.id == config.get("default_preset")),
             0,

@@ -10,7 +10,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, Gtk
 
 
-_language = "tr"
+_language = "en"
 
 
 def set_language(language: str) -> None:

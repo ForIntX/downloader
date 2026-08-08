@@ -1,15 +1,15 @@
 import unittest
 
-from video_indirici.i18n import set_language, tr
+from video_indirici.i18n import get_language, set_language, tr
 
 
 class LocalizationTests(unittest.TestCase):
     def tearDown(self) -> None:
-        set_language("tr")
+        set_language("en")
 
-    def test_turkish_is_the_default_language(self) -> None:
-        set_language("tr")
-        self.assertEqual(tr("İndir"), "İndir")
+    def test_english_is_the_default_language(self) -> None:
+        self.assertEqual(get_language(), "en")
+        self.assertEqual(tr("İndir"), "Download")
 
     def test_static_and_dynamic_text_is_translated(self) -> None:
         set_language("en")

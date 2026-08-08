@@ -32,7 +32,7 @@ class AppState {
     this.cookieBrowser = 'firefox',
     this.cookieProfile = '',
     this.cookieFile = '',
-    this.localeCode = 'tr',
+    this.localeCode = 'en',
   });
 
   final bool initialized;
@@ -196,7 +196,7 @@ class AppController extends StateNotifier<AppState> {
         cookieBrowser: await database.getSetting('cookie_browser') ?? 'firefox',
         cookieProfile: await database.getSetting('cookie_profile') ?? '',
         cookieFile: await database.getSetting('cookie_file') ?? '',
-        localeCode: await database.getSetting('locale') ?? 'tr',
+        localeCode: await database.getSetting('locale') ?? 'en',
         clearError: true,
       );
       await _configureEngine();

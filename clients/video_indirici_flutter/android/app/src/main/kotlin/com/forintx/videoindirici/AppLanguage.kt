@@ -18,7 +18,7 @@ internal object AppLanguage {
 
     fun text(context: Context, resourceId: Int, vararg arguments: Any): String {
         val language = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .getString(KEY_LOCALE, "tr") ?: "tr"
+            .getString(KEY_LOCALE, "en") ?: "en"
         val configuration = Configuration(context.resources.configuration)
         configuration.setLocale(Locale.forLanguageTag(language))
         val localized = context.createConfigurationContext(configuration)

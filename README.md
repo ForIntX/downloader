@@ -1,49 +1,49 @@
 # Downloader
 
-[Türkçe](README.md) | [English](README.en.md)
+[English](README.md) | [Türkçe](README.tr.md)
 
-YouTube ve yt-dlp tarafından desteklenen kaynaklardan video, playlist ve ses
-indirmek için Linux, Android ve Windows uygulaması.
+A Linux, Android, and Windows application for downloading video, playlists,
+and audio from YouTube and other sources supported by yt-dlp.
 
-Proje sürümü: **1.0.0-beta.2** (`1.0 Beta`)
+Project version: **1.0.0-beta.3** (`1.0 Beta`)
 
-| Platform | Durum | Teknoloji |
+| Platform | Status | Technology |
 | --- | --- | --- |
-| Linux | Kullanılabilir | GTK4 / Libadwaita / Python |
-| Android 8+ | Alpha APK hazır | Flutter / Kotlin / Python 3.12 |
-| Windows 10+ | Kaynak ve paketleme hazır | Flutter / yt-dlp / FFmpeg |
+| Linux | Available | GTK4 / Libadwaita / Python |
+| Android 8+ | Alpha APK ready | Flutter / Kotlin / Python 3.12 |
+| Windows 10+ | Source and packaging ready | Flutter / yt-dlp / FFmpeg |
 
-## Ortak özellikler
+## Shared features
 
-- Video: en iyi kalite, 2160p, 1440p, 1080p, 720p ve 480p MP4
-- Ses: MP3 128/192/256/320 kbps, M4A ve Opus
-- Tek video için küçük resim, kanal, süre, izlenme ve açılır açıklama
-- 2.000 girdilik playlist için sanallaştırılmış liste, arama ve toplu seçim
-- Kalıcı kuyruk/geçmiş, tekrar URL denetimi, sıralama, duraklatma ve iptal
-- Kesin çıktı yolu üzerinden dosyayı açma, paylaşma ve yeniden indirme
-- Android’de uygulama içi MP3/MP4 oynatıcı ve indirilen dosya konumları
-- Bildirim/kilit ekranından yönetilen, önceki-sonraki parça destekli arka plan müzik kuyruğu
-- Müzik/video sekmeli geçmiş, kategori bazlı temizleme ve video oynatma kuyruğu
-- Bekleyen işleri anında yeniden zamanlayan yalnız Wi‑Fi ve yalnız şarj ayarları
-- Android/Windows için özel yt-dlp formatı, hız sınırı, paralel parça sayısı ve dosya adı şablonu
-- Linux için zaman çizgisi, ses, 10 saniye sarma ve önceki/sonraki dosya destekli uygulama içi oynatıcı
-- Linux müzik/video geçmiş filtreleri ve kategori bazlı temizleme
-- Türkçe ve İngilizce arayüz, koyu tema ve dar/geniş ekran yerleşimi
+- Video: best quality, 2160p, 1440p, 1080p, 720p, and 480p MP4
+- Audio: MP3 at 128/192/256/320 kbps, M4A, and Opus
+- Thumbnail, channel, duration, view count, and collapsible description for a single video
+- Virtualized list, search, and bulk selection for playlists with 2,000 entries
+- Persistent queue/history, duplicate URL checks, reordering, pause, and cancel
+- Open, share, or download again using the exact output file path
+- In-app MP3/MP4 player and download locations on Android
+- Background music queue with previous/next controls in notifications and on the lock screen
+- Music/video history tabs, category-based cleanup, and a video playback queue
+- Wi-Fi-only and charging-only settings that immediately reschedule pending jobs
+- Custom yt-dlp format, speed limit, concurrent fragments, and filename templates on Android/Windows
+- Linux in-app player with timeline, volume, 10-second seek, and previous/next file controls
+- Linux music/video history filters and category-based cleanup
+- Turkish and English interface, dark theme, and narrow/wide layouts
 
 ## Android
 
-Android istemcisi `clients/video_indirici_flutter` dizinindedir. Python 3.12,
-yt-dlp `2026.01.29`, yt-dlp-ejs, QuickJS-NG `0.15.0` ve LGPL FFmpegKit
-uygulama içinde paketlenir.
-İndirmeler Android 14 ve sonrasında kullanıcı başlatmalı aktarım işi,
-daha eski sürümlerde foreground service olarak çalışır. Tamamlanan dosya
-MediaStore ile `Download/video_indirici/musics` veya
-`Download/video_indirici/videos` alanına yazılır. Ayarlar ekranındaki
-konum satırları ilgili klasörü doğrudan açar.
-Tamamlanan bir işin üç nokta menüsündeki **Dosya konumunu aç**
-seçeneği de dosyanın gerçek klasörünü açar.
+The Android client is in `clients/video_indirici_flutter`. Python 3.12,
+yt-dlp `2026.01.29`, yt-dlp-ejs, QuickJS-NG `0.15.0`, and an LGPL FFmpegKit
+build are bundled with the application.
 
-Debug APK oluşturmak:
+Downloads run as a user-initiated data transfer job on Android 14 and newer,
+and as a foreground service on older versions. Completed files are written
+through MediaStore to `Download/video_indirici/musics` or
+`Download/video_indirici/videos`. Location rows in Settings open their folders
+directly. **Open file location** in a completed job's overflow menu opens the
+actual containing folder.
+
+Build installable packages:
 
 ```bash
 cd clients/video_indirici_flutter
@@ -53,30 +53,36 @@ flutter build apk --release --target-platform android-arm64,android-x64
 flutter build appbundle --release --target-platform android-arm64,android-x64
 ```
 
-Doğrudan telefona kurulabilen APK
-`clients/video_indirici_flutter/build/app/outputs/flutter-apk/app-release.apk`,
-Play Console paketi ise
-`clients/video_indirici_flutter/build/app/outputs/bundle/release/app-release.aab`
-konumunda oluşur. Kalıcı dağıtım öncesinde kendi upload anahtarınızla
-imzalanmalıdır.
+The installable APK is created at
+`clients/video_indirici_flutter/build/app/outputs/flutter-apk/app-release.apk`;
+the Play Console bundle is created at
+`clients/video_indirici_flutter/build/app/outputs/bundle/release/app-release.aab`.
+Use your own upload key before permanent distribution.
 
-Play AAB iş akışı iki GitHub Actions secret'ı bekler:
-`ANDROID_KEYSTORE_BASE64` ve tam `key.properties` içeriğini taşıyan
-`ANDROID_KEY_PROPERTIES`. Anahtarlar veya parolalar Git'e eklenmez.
+The Play AAB workflow expects two GitHub Actions secrets:
+`ANDROID_KEYSTORE_BASE64` and `ANDROID_KEY_PROPERTIES`, containing the complete
+`key.properties` file. Keys and passwords must never be committed.
 
-> Android uygulamasının YouTube indirme işlevi Google Play ve YouTube
-> politikaları nedeniyle mağaza reddi veya hesap yaptırımı riski taşır.
+> YouTube downloading functionality may lead to store rejection or account
+> action under Google Play and YouTube policies.
+
+For the easiest installation, download the `Android.apk` file from
+[GitHub Releases](https://github.com/ForIntX/downloader/releases), open it on
+the phone, and approve installation from the browser/file manager when Android
+asks. The `Android.aab` file is only for Play Console and cannot be installed
+directly.
 
 ## Windows
 
-Windows istemcisi aynı Flutter arayüzünü kullanır. Windows iş akışı
-`yt-dlp.exe`, Deno ve LGPL FFmpeg araçlarını indirir; ardından hem taşınabilir
-ZIP hem Inno Setup kurulum dosyası oluşturur. Actions sayfasındaki
-**Windows packages** iş akışı elle çalıştırılarak Windows paketi test edilebilir.
-Firefox, Chrome, Edge ve Brave profilleri ile elle belirtilen `cookies.txt`
-dosyası desteklenir; çerez içeriği veritabanına veya loglara yazılmaz.
+The Windows client uses the same Flutter interface. Its workflow downloads
+`yt-dlp.exe`, Deno, and LGPL FFmpeg, then creates both a portable ZIP and an
+Inno Setup installer. Run **Windows packages** manually on the Actions page to
+test the Windows package.
 
-Yerel Windows derlemesi:
+Firefox, Chrome, Edge, and Brave profiles and a manually selected `cookies.txt`
+file are supported. Cookie contents are not written to the database or logs.
+
+Local Windows build:
 
 ```powershell
 cd clients\video_indirici_flutter
@@ -85,12 +91,23 @@ flutter test
 flutter build windows --release
 ```
 
-Gerekli motor dosyaları `windows/tools` altına konulmalıdır; ayrıntılar o
-klasördeki README'dedir.
+Engine binaries must be placed under `windows/tools`; see the README in that
+directory for details.
 
-## Linux kurulumu
+Most users should download `Windows-Setup.exe` from
+[GitHub Releases](https://github.com/ForIntX/downloader/releases) and follow
+the installer. The portable ZIP is provided for users who do not want an
+installation. Until the executable is code-signed, Windows may display a
+SmartScreen warning.
 
-Debian/Ubuntu, Fedora ve Arch tabanlı sistemlerde:
+## Linux installation
+
+On Debian/Ubuntu, download the `Linux.deb` file from
+[GitHub Releases](https://github.com/ForIntX/downloader/releases) and open it
+with the system software installer. After installation, launch **Downloader**
+from the application menu.
+
+For Fedora, Arch, and other supported systems, extract `Linux.tar.gz` and run:
 
 ```bash
 chmod +x start.sh install.sh uninstall.sh
@@ -98,22 +115,21 @@ chmod +x start.sh install.sh uninstall.sh
 ./install.sh
 ```
 
-Sonraki çalıştırmalarda uygulama menüsündeki **Downloader** simgesine
-tıklanabilir. Kurmadan kaynak koddan çalıştırmak için `./start.sh`
-kullanılır.
+For later launches, select **Downloader** from the application menu. Use
+`./start.sh` to run directly from the source tree without installing.
 
-Tamamlanan bir indirmedeki oynat düğmesi dosyayı uygulama içinde açar.
-Boşluk oynatır/duraklatır, sol/sağ ok 10 saniye sarar,
-`Ctrl+Sol/Sağ` ise geçmişteki aynı tür dosyalar arasında geçiş yapar.
+The play button on a completed download opens it inside the application. Space
+plays/pauses, Left/Right seeks by 10 seconds, and `Ctrl+Left/Right` switches
+between history files of the same type.
 
-Kaldırma varsayılan olarak kullanıcı verilerini korur:
+Uninstalling preserves user data by default:
 
 ```bash
 ./uninstall.sh
 ./uninstall.sh --purge
 ```
 
-## Testler
+## Tests
 
 ```bash
 python3 -m unittest discover -s tests -v
@@ -125,13 +141,14 @@ dart analyze lib test
 flutter test
 ```
 
-Gizlilik ve Play Store hazırlık belgelerinin Türkçe ve İngilizce
-sürümleri `docs/` altındadır.
+Turkish and English privacy and Play Store preparation documents are under
+`docs/`.
 
-GitHub'da **Publish platform release** iş akışı bir sürüm etiketi için
-Linux, Android ve Windows paketlerini oluşturup tek Release altında yayınlar.
+Pushing a version tag automatically builds the Linux, Android, and Windows
+packages and publishes them under one GitHub Release. The same workflow can
+also be started manually from GitHub Actions.
 
 Website: [muhammetburakakkas.com](https://muhammetburakakkas.com)
 
-Uygulama kaynak kodu [MIT Lisansı](LICENSE) ile sunulur. Paketlenmiş üçüncü
-taraf araçlar kendi lisanslarına tabidir.
+Application source is provided under the [MIT License](LICENSE). Bundled
+third-party tools remain subject to their own licenses.

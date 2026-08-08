@@ -91,7 +91,7 @@ python3 -m venv --system-site-packages "$VENV_DIR"
 
 rm -rf "$APP_DIR/video_indirici"
 cp -R "$SCRIPT_DIR/video_indirici" "$APP_DIR/video_indirici"
-cp "$SCRIPT_DIR/app.py" "$SCRIPT_DIR/start.sh" "$SCRIPT_DIR/VERSION" "$SCRIPT_DIR/LICENSE" "$SCRIPT_DIR/README.md" "$SCRIPT_DIR/README.en.md" "$APP_DIR/"
+cp "$SCRIPT_DIR/app.py" "$SCRIPT_DIR/start.sh" "$SCRIPT_DIR/VERSION" "$SCRIPT_DIR/LICENSE" "$SCRIPT_DIR/README.md" "$SCRIPT_DIR/README.tr.md" "$APP_DIR/"
 cp "$SCRIPT_DIR/assets/$APP_ID.svg" "$ICON_DIR/$APP_ID.svg"
 
 cat > "$BIN_DIR/downloader" <<EOF

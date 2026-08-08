@@ -1,5 +1,5 @@
 #define MyAppName "Downloader"
-#define MyAppVersion "1.0.0-beta.2"
+#define MyAppVersion "1.0.0-beta.3"
 #define MyAppPublisher "ForintX"
 #define MyAppURL "https://muhammetburakakkas.com"
 #define MyAppExeName "downloader.exe"
@@ -15,7 +15,7 @@ DefaultDirName={autopf}\Downloader
 DefaultGroupName=Downloader
 AllowNoIcons=yes
 OutputDir=..\..\dist
-OutputBaseFilename=Downloader-1.0.0-beta.2-Setup
+OutputBaseFilename=Downloader-1.0.0-beta.3-Setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -23,11 +23,11 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=lowest
 UninstallDisplayIcon={app}\{#MyAppExeName}
-LicenseFile=..\..\..\LICENSE
+LicenseFile=..\..\..\..\LICENSE
 
 [Languages]
-Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 
 [CustomMessages]
 turkish.CreateDesktopIcon=Masaüstü simgesi oluştur

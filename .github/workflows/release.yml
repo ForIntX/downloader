@@ -1,15 +1,21 @@
 name: Publish platform release
 
 on:
+  push:
+    tags:
+      - '[0-9]*'
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing version tag to publish (for example 1.0.0-beta.2)
+        description: Existing version tag to publish (for example 1.0.0-beta.3)
         required: true
         type: string
 
 permissions:
   contents: write
+
+env:
+  RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
 
 jobs:
   linux:
@@ -17,19 +23,42 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ env.RELEASE_TAG }}
       - name: Verify and package Linux application
         shell: bash
         run: |
-          test "$(cat VERSION)" = "${{ inputs.tag }}"
-          package="Downloader-${{ inputs.tag }}-Linux"
+          test "$(cat VERSION)" = "${RELEASE_TAG}"
+          package="Downloader-${RELEASE_TAG}-Linux"
           mkdir -p "$package"
-          cp -R app.py video_indirici assets start.sh install.sh uninstall.sh VERSION LICENSE README.md README.en.md SECURITY.md SECURITY.en.md "$package/"
+          cp -R app.py video_indirici assets start.sh install.sh uninstall.sh VERSION LICENSE README.md README.tr.md SECURITY.md SECURITY.en.md "$package/"
           tar -czf "$package.tar.gz" "$package"
+          deb_root="Downloader-${RELEASE_TAG}-Debian"
+          mkdir -p "$deb_root/DEBIAN" "$deb_root/opt/downloader" "$deb_root/usr/bin" \
+            "$deb_root/usr/share/applications" "$deb_root/usr/share/icons/hicolor/scalable/apps"
+          cp -R app.py video_indirici assets VERSION LICENSE README.md README.tr.md "$deb_root/opt/downloader/"
+          cp assets/com.forintx.VideoIndirici.desktop "$deb_root/usr/share/applications/com.forintx.VideoIndirici.desktop"
+          sed -i 's|^Exec=downloader$|Exec=/usr/bin/downloader|' "$deb_root/usr/share/applications/com.forintx.VideoIndirici.desktop"
+          cp assets/com.forintx.VideoIndirici.svg "$deb_root/usr/share/icons/hicolor/scalable/apps/com.forintx.VideoIndirici.svg"
+          deb_version="${RELEASE_TAG/-beta./~beta.}"
+          printf '%s\n' \
+            'Package: downloader' \
+            "Version: ${deb_version}" \
+            'Section: video' \
+            'Priority: optional' \
+            'Architecture: all' \
+            'Depends: python3, python3-gi, gir1.2-gtk-4.0, gir1.2-adw-1, yt-dlp, ffmpeg, gstreamer1.0-plugins-base, gstreamer1.0-plugins-good, gstreamer1.0-plugins-bad, gstreamer1.0-libav' \
+            'Maintainer: ForIntX' \
+            'Homepage: https://muhammetburakakkas.com' \
+            'Description: Video, playlist, and audio downloader' > "$deb_root/DEBIAN/control"
+          printf '%s\n' '#!/bin/sh' 'exec python3 /opt/downloader/app.py "$@"' > "$deb_root/usr/bin/downloader"
+          chmod 0755 "$deb_root/usr/bin/downloader"
+          dpkg-deb --build --root-owner-group "$deb_root" "Downloader-${RELEASE_TAG}-Linux.deb"
       - uses: actions/upload-artifact@v4
         with:
-          name: downloader-linux-${{ inputs.tag }}
-          path: Downloader-${{ inputs.tag }}-Linux.tar.gz
+          name: downloader-linux-${{ env.RELEASE_TAG }}
+          path: |
+            Downloader-${{ env.RELEASE_TAG }}-Linux.tar.gz
+            Downloader-${{ env.RELEASE_TAG }}-Linux.deb
           if-no-files-found: error
 
   android:
@@ -40,7 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ env.RELEASE_TAG }}
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -70,14 +99,14 @@ jobs:
       - name: Name Android packages
         shell: bash
         run: |
-          cp build/app/outputs/flutter-apk/app-release.apk "Downloader-${{ inputs.tag }}-Android.apk"
-          cp build/app/outputs/bundle/release/app-release.aab "Downloader-${{ inputs.tag }}-Android.aab"
+          cp build/app/outputs/flutter-apk/app-release.apk "Downloader-${RELEASE_TAG}-Android.apk"
+          cp build/app/outputs/bundle/release/app-release.aab "Downloader-${RELEASE_TAG}-Android.aab"
       - uses: actions/upload-artifact@v4
         with:
-          name: downloader-android-${{ inputs.tag }}
+          name: downloader-android-${{ env.RELEASE_TAG }}
           path: |
-            clients/video_indirici_flutter/Downloader-${{ inputs.tag }}-Android.apk
-            clients/video_indirici_flutter/Downloader-${{ inputs.tag }}-Android.aab
+            clients/video_indirici_flutter/Downloader-${{ env.RELEASE_TAG }}-Android.apk
+            clients/video_indirici_flutter/Downloader-${{ env.RELEASE_TAG }}-Android.aab
           if-no-files-found: error
 
   windows:
@@ -88,7 +117,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ env.RELEASE_TAG }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.44.7
@@ -116,13 +145,13 @@ jobs:
       - name: Create portable ZIP and installer
         shell: pwsh
         run: |
-          Compress-Archive build/windows/x64/runner/Release/* "Downloader-${{ inputs.tag }}-Windows.zip"
+          Compress-Archive build/windows/x64/runner/Release/* "Downloader-${env:RELEASE_TAG}-Windows.zip"
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" packaging/windows/video_indirici.iss
       - uses: actions/upload-artifact@v4
         with:
-          name: downloader-windows-${{ inputs.tag }}
+          name: downloader-windows-${{ env.RELEASE_TAG }}
           path: |
-            clients/video_indirici_flutter/Downloader-${{ inputs.tag }}-Windows.zip
+            clients/video_indirici_flutter/Downloader-${{ env.RELEASE_TAG }}-Windows.zip
             clients/video_indirici_flutter/dist/*.exe
           if-no-files-found: error
 
@@ -132,7 +161,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ env.RELEASE_TAG }}
       - uses: actions/download-artifact@v4
         with:
           path: release-assets
@@ -142,5 +171,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          cat "docs/releases/${{ inputs.tag }}.md" "docs/releases/${{ inputs.tag }}.en.md" > release-notes.md
-          gh release create "${{ inputs.tag }}" release-assets/* --verify-tag --prerelease --title "Downloader ${{ inputs.tag }}" --notes-file release-notes.md
+          cat "docs/releases/${RELEASE_TAG}.en.md" "docs/releases/${RELEASE_TAG}.md" > release-notes.md
+          gh release create "${RELEASE_TAG}" release-assets/* --verify-tag --prerelease --title "Downloader ${RELEASE_TAG}" --notes-file release-notes.md

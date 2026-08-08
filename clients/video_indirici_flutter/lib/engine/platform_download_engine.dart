@@ -43,7 +43,7 @@ class PlatformDownloadEngine implements DownloadEngine {
     String cookieBrowser = 'firefox',
     String cookieProfile = '',
     String cookieFile = '',
-    String localeCode = 'tr',
+    String localeCode = 'en',
   }) async {
     _wifiOnly = wifiOnly;
     _chargingOnly = chargingOnly;

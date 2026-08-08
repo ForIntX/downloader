@@ -124,7 +124,7 @@ class MainActivity : AudioServiceActivity() {
                     result.success(null)
                 }
                 "setDownloadConstraints" -> {
-                    AppLanguage.set(this, call.argument<String>("locale") ?: "tr")
+                    AppLanguage.set(this, call.argument<String>("locale") ?: "en")
                     DownloadNotifications.createChannels(this)
                     AndroidDownloadScheduler.rescheduleWaiting(
                         this,

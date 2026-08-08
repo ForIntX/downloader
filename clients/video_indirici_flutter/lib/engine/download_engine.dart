@@ -14,7 +14,7 @@ abstract interface class DownloadEngine {
     String cookieBrowser = 'firefox',
     String cookieProfile = '',
     String cookieFile = '',
-    String localeCode = 'tr',
+    String localeCode = 'en',
   });
 
   Future<void> start(DownloadJob job);

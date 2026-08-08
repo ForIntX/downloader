@@ -19,7 +19,7 @@ def _read_version() -> str:
             return candidate.read_text(encoding="utf-8").strip()
         except OSError:
             continue
-    return "1.0.0-beta.2"
+    return "1.0.0-beta.3"
 
 
 APP_VERSION = _read_version()
@@ -66,7 +66,7 @@ SUB_LANG_MAP = {
 DEFAULT_CONFIG = {
     "schema_version": SCHEMA_VERSION,
     "config_version": APP_VERSION,
-    "language": "tr",
+    "language": "en",
     "folder": str(DEFAULT_DOWNLOAD_DIR),
     "notify": True,
     "open_folder": False,
