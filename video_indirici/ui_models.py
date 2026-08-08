@@ -98,6 +98,8 @@ class BoundMarquee(Gtk.ScrolledWindow):
         self.set_min_content_height(24)
         self.set_hexpand(True)
         self.label = Gtk.Label(xalign=0)
+        self.label._i18n_label_skip = True
+        self._i18n_tooltip_skip = True
         self.label.set_single_line_mode(True)
         self.label.add_css_class("video-title")
         self.set_child(self.label)

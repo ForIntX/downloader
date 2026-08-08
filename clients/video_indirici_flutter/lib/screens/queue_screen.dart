@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/localized_material.dart';
 import '../providers/app_controller.dart';
 import '../widgets/job_tile.dart';
 

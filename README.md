@@ -1,9 +1,11 @@
 # Downloader
 
+[Türkçe](README.md) | [English](README.en.md)
+
 YouTube ve yt-dlp tarafından desteklenen kaynaklardan video, playlist ve ses
 indirmek için Linux, Android ve Windows uygulaması.
 
-Proje sürümü: **1.0.0-beta.1** (`1.0 Beta`)
+Proje sürümü: **1.0.0-beta.2** (`1.0 Beta`)
 
 | Platform | Durum | Teknoloji |
 | --- | --- | --- |
@@ -26,7 +28,7 @@ Proje sürümü: **1.0.0-beta.1** (`1.0 Beta`)
 - Android/Windows için özel yt-dlp formatı, hız sınırı, paralel parça sayısı ve dosya adı şablonu
 - Linux için zaman çizgisi, ses, 10 saniye sarma ve önceki/sonraki dosya destekli uygulama içi oynatıcı
 - Linux müzik/video geçmiş filtreleri ve kategori bazlı temizleme
-- Türkçe arayüz, koyu tema ve dar/geniş ekran yerleşimi
+- Türkçe ve İngilizce arayüz, koyu tema ve dar/geniş ekran yerleşimi
 
 ## Android
 
@@ -123,7 +125,8 @@ dart analyze lib test
 flutter test
 ```
 
-Gizlilik ve Play Store hazırlık belgeleri `docs/` altındadır.
+Gizlilik ve Play Store hazırlık belgelerinin Türkçe ve İngilizce
+sürümleri `docs/` altındadır.
 
 Website: [muhammetburakakkas.com](https://muhammetburakakkas.com)
 

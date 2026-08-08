@@ -33,6 +33,7 @@ class MediaPlayerWindow(Adw.Window):
         if not items:
             raise ValueError("Oynatılacak dosya bulunamadı")
         super().__init__(transient_for=parent)
+        self._i18n_title_skip = True
         self.set_default_size(820, 580)
         self.set_size_request(540, 400)
 
@@ -61,6 +62,7 @@ class MediaPlayerWindow(Adw.Window):
 
         header = Adw.HeaderBar()
         self.header_title = Adw.WindowTitle(title="Downloader", subtitle="")
+        self.header_title._i18n_window_title_skip = True
         header.set_title_widget(self.header_title)
         root.append(header)
 
@@ -90,6 +92,7 @@ class MediaPlayerWindow(Adw.Window):
         audio_icon.set_pixel_size(128)
         audio_box.append(audio_icon)
         self.audio_title = Gtk.Label()
+        self.audio_title._i18n_label_skip = True
         self.audio_title.set_wrap(True)
         self.audio_title.set_justify(Gtk.Justification.CENTER)
         self.audio_title.set_max_width_chars(52)
@@ -144,6 +147,7 @@ class MediaPlayerWindow(Adw.Window):
         path_label.set_hexpand(True)
         path_label.add_css_class("dim-label")
         self.path_label = path_label
+        self.path_label._i18n_label_skip = True
         bottom.append(path_label)
 
         external = Gtk.Button(label="Harici Uygulamada Aç")

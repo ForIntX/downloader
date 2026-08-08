@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart' as ja;
 
+import '../l10n/app_localizations.dart';
 import '../models/download_models.dart';
 
 Future<AppAudioHandler?>? _initializingAudio;
@@ -20,11 +21,12 @@ Future<AppAudioHandler?> _createBackgroundAudio() async {
   try {
     final handler = await AudioService.init<AppAudioHandler>(
       builder: AppAudioHandler.new,
-      config: const AudioServiceConfig(
+      config: AudioServiceConfig(
         androidNotificationChannelId: 'com.forintx.videoindirici.playback',
-        androidNotificationChannelName: 'Müzik oynatma',
-        androidNotificationChannelDescription:
-            'İndirilen müziklerin arka planda oynatma kontrolleri',
+        androidNotificationChannelName: tr('Müzik oynatma'),
+        androidNotificationChannelDescription: tr(
+          'İndirilen müziklerin arka planda oynatma kontrolleri',
+        ),
         // app_icon manifestte de kullanıldığı için release kaynak küçültme
         // aşamasında silinmez. Dinamik mipmap adı bazı release APK'larda 0
         // dönüp Android'in "no valid small icon" hatasıyla kapanıyordu.
@@ -51,7 +53,7 @@ List<MediaItem> audioItemsFromJobs(Iterable<DownloadJob> jobs) => [
       MediaItem(
         id: job.id,
         title: job.title,
-        album: 'İndirilen müzikler',
+        album: tr('İndirilen müzikler'),
         artist: 'Downloader',
         artUri: _safeUri(job.thumbnailUrl),
         extras: {'uri': job.outputPath, 'preset': job.preset.label},
@@ -71,7 +73,7 @@ class AppAudioHandler extends BaseAudioHandler {
     _player.errorStream.listen((error) {
       customEvent.add({
         'kind': 'error',
-        'message': error.message ?? 'Müzik oynatılamadı.',
+        'message': error.message ?? tr('Müzik oynatılamadı.'),
       });
     });
   }
@@ -87,9 +89,9 @@ class AppAudioHandler extends BaseAudioHandler {
     required String selectedJobId,
   }) async {
     final items = audioItemsFromJobs(jobs);
-    if (items.isEmpty) throw StateError('Oynatılabilir müzik bulunamadı.');
+    if (items.isEmpty) throw StateError(tr('Oynatılabilir müzik bulunamadı.'));
     final selectedIndex = items.indexWhere((item) => item.id == selectedJobId);
-    if (selectedIndex < 0) throw StateError('Seçilen müzik bulunamadı.');
+    if (selectedIndex < 0) throw StateError(tr('Seçilen müzik bulunamadı.'));
     queue.add(items);
     await _player.setAudioSources(
       [

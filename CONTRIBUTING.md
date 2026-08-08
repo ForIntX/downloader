@@ -1,5 +1,7 @@
 # Katkı rehberi
 
+[Türkçe](CONTRIBUTING.md) | [English](CONTRIBUTING.en.md)
+
 Katkı yapmadan önce mevcut issue ve pull request'leri kontrol edin. Büyük
 değişiklikler için uygulamaya geçmeden önce bir özellik isteği açın.
 

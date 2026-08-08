@@ -1,4 +1,4 @@
-name: Kaynak kontrolleri
+name: Source checks
 
 on:
   push:
@@ -21,11 +21,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Sistem bağımlılıkları
+      - name: System dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-gi gir1.2-gtk-4.0 gir1.2-adw-1
-      - name: Python ve shell kontrolleri
+      - name: Python and shell checks
         run: |
           python3 -m unittest discover -s tests -v
           python3 -m py_compile app.py video_indirici/*.py

@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../core/constants.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/localized_material.dart';
 import '../models/download_models.dart';
 import '../providers/app_controller.dart';
 
@@ -69,9 +70,9 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             DropdownButtonFormField<String>(
               initialValue: state.speedLimit,
-              decoration: const InputDecoration(
-                labelText: 'Hız sınırı',
-                prefixIcon: Icon(Icons.speed),
+              decoration: InputDecoration(
+                labelText: tr('Hız sınırı'),
+                prefixIcon: const Icon(Icons.speed),
               ),
               items: const [
                 DropdownMenuItem(value: '', child: Text('Sınırsız')),
@@ -101,11 +102,12 @@ class SettingsScreen extends ConsumerWidget {
               key: const ValueKey('filename-template-setting'),
               initialValue: state.filenameTemplate,
               onChanged: controller.setFilenameTemplate,
-              decoration: const InputDecoration(
-                labelText: 'Dosya adı şablonu',
-                prefixIcon: Icon(Icons.drive_file_rename_outline),
-                helperText:
-                    '%(title)s, %(id)s ve %(ext)s alanlarını kullanabilirsiniz.',
+              decoration: InputDecoration(
+                labelText: tr('Dosya adı şablonu'),
+                prefixIcon: const Icon(Icons.drive_file_rename_outline),
+                helperText: tr(
+                  '%(title)s, %(id)s ve %(ext)s alanlarını kullanabilirsiniz.',
+                ),
               ),
             ),
             if (Platform.isWindows) ...[
@@ -119,7 +121,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               DropdownButtonFormField<String>(
                 initialValue: state.cookieMode,
-                decoration: const InputDecoration(labelText: 'Çerez yöntemi'),
+                decoration: InputDecoration(labelText: tr('Çerez yöntemi')),
                 items: const [
                   DropdownMenuItem(value: 'none', child: Text('Yok')),
                   DropdownMenuItem(
@@ -134,7 +136,7 @@ class SettingsScreen extends ConsumerWidget {
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
                   initialValue: state.cookieBrowser,
-                  decoration: const InputDecoration(labelText: 'Tarayıcı'),
+                  decoration: InputDecoration(labelText: tr('Tarayıcı')),
                   items: const [
                     DropdownMenuItem(value: 'firefox', child: Text('Firefox')),
                     DropdownMenuItem(value: 'chrome', child: Text('Chrome')),
@@ -150,9 +152,9 @@ class SettingsScreen extends ConsumerWidget {
                   key: const ValueKey('cookie-profile-setting'),
                   initialValue: state.cookieProfile,
                   onChanged: controller.setCookieProfile,
-                  decoration: const InputDecoration(
-                    labelText: 'Profil (isteğe bağlı)',
-                    hintText: 'Örn. Default',
+                  decoration: InputDecoration(
+                    labelText: tr('Profil (isteğe bağlı)'),
+                    hintText: tr('Örn. Default'),
                   ),
                 ),
               ],
@@ -162,9 +164,9 @@ class SettingsScreen extends ConsumerWidget {
                   key: const ValueKey('cookie-file-setting'),
                   initialValue: state.cookieFile,
                   onChanged: controller.setCookieFile,
-                  decoration: const InputDecoration(
-                    labelText: 'cookies.txt dosya yolu',
-                    hintText: r'C:\Users\kullanici\Downloads\cookies.txt',
+                  decoration: InputDecoration(
+                    labelText: tr('cookies.txt dosya yolu'),
+                    hintText: tr(r'C:\Users\kullanici\Downloads\cookies.txt'),
                   ),
                 ),
               ],
@@ -219,11 +221,7 @@ class SettingsScreen extends ConsumerWidget {
               child: const Column(
                 children: [
                   RadioListTile(value: 'tr', title: Text('Türkçe')),
-                  RadioListTile(
-                    value: 'en',
-                    title: Text('English (yakında)'),
-                    enabled: false,
-                  ),
+                  RadioListTile(value: 'en', title: Text('English')),
                 ],
               ),
             ),
@@ -418,7 +416,7 @@ class _LocationTile extends StatelessWidget {
     isThreeLine: true,
     onTap: () => _open(context),
     trailing: IconButton(
-      tooltip: '$title klasörünü aç',
+      tooltip: tr('$title klasörünü aç'),
       onPressed: () => _open(context),
       icon: const Icon(Icons.folder_open_outlined),
     ),

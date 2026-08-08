@@ -1,5 +1,7 @@
 # Güvenlik politikası
 
+[Türkçe](SECURITY.md) | [English](SECURITY.en.md)
+
 ## Desteklenen sürüm
 
 Güvenlik düzeltmeleri yalnızca en güncel beta veya kararlı sürüm için

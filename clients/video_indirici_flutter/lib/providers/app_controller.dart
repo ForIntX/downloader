@@ -643,6 +643,7 @@ class AppController extends StateNotifier<AppState> {
   Future<void> setLocale(String value) async {
     state = state.copyWith(localeCode: value);
     await database.setSetting('locale', value);
+    await _configureEngine();
   }
 
   Future<void> clearPersonalData() async {
@@ -671,6 +672,7 @@ class AppController extends StateNotifier<AppState> {
     cookieBrowser: state.cookieBrowser,
     cookieProfile: state.cookieProfile,
     cookieFile: state.cookieFile,
+    localeCode: state.localeCode,
   );
 
   String _normalizeUrl(String value) {

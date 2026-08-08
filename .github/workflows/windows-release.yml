@@ -21,15 +21,15 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Sürüm numarasını oku
+      - name: Read version number
         shell: pwsh
         run: |
           $line = Select-String -Path pubspec.yaml -Pattern '^version:' | Select-Object -First 1
           $version = (($line.Line -replace '^version:\s*', '') -split '\+')[0]
-          if (-not $version) { throw 'Sürüm numarası okunamadı' }
+          if (-not $version) { throw 'Version number could not be read' }
           "APP_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-      - name: Windows motor araçlarını indir
+      - name: Download Windows engine tools
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force windows/tools | Out-Null
@@ -48,7 +48,7 @@ jobs:
           flutter test
           flutter build windows --release
 
-      - name: Taşınabilir ZIP
+      - name: Portable ZIP
         shell: pwsh
         run: Compress-Archive build/windows/x64/runner/Release/* "Downloader-$env:APP_VERSION-Windows.zip"
 

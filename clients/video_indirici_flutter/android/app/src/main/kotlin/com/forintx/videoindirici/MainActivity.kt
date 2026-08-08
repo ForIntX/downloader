@@ -124,6 +124,8 @@ class MainActivity : AudioServiceActivity() {
                     result.success(null)
                 }
                 "setDownloadConstraints" -> {
+                    AppLanguage.set(this, call.argument<String>("locale") ?: "tr")
+                    DownloadNotifications.createChannels(this)
                     AndroidDownloadScheduler.rescheduleWaiting(
                         this,
                         call.argument<Boolean>("wifi_only") ?: false,
@@ -228,7 +230,7 @@ class MainActivity : AudioServiceActivity() {
         val mime = contentResolver.getType(uri) ?: "*/*"
         val action = if (share) Intent.ACTION_SEND else Intent.ACTION_VIEW
         val intent = Intent(action).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.clipData = ClipData.newRawUri("Downloader dosyası", uri)
+        intent.clipData = ClipData.newRawUri(AppLanguage.text(this, R.string.shared_file), uri)
         if (share) {
             intent.type = mime
             intent.putExtra(Intent.EXTRA_STREAM, uri)

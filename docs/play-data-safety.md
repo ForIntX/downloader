@@ -1,5 +1,7 @@
 # Google Play veri güvenliği taslağı
 
+[Türkçe](play-data-safety.md) | [English](play-data-safety-en.md)
+
 - Geliştirici sunucusuna veri toplanmaz veya paylaşılmaz.
 - Kullanıcının URL'leri yalnızca medya kaynağına yapılan isteklerde kullanılır.
 - Kuyruk, geçmiş, ayarlar ve loglar cihazda tutulur.

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 
 import '../models/download_models.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/localized_material.dart';
 import '../providers/app_controller.dart';
 import '../screens/media_player_screen.dart';
 import 'marquee_text.dart';
@@ -45,7 +46,8 @@ class JobTile extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${job.preset.label} • ${_status(job.status)}',
+                    '${tr(job.preset.label)} • ${tr(_status(job.status))}',
+                    localize: false,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   if (job.status.isActive ||
@@ -80,9 +82,11 @@ class JobTile extends ConsumerWidget {
             const SizedBox(width: 8),
             if (job.status == DownloadStatus.completed)
               IconButton.filledTonal(
-                tooltip: job.preset.kind == MediaKind.video
-                    ? 'Videoyu oynat'
-                    : 'Müziği çal',
+                tooltip: tr(
+                  job.preset.kind == MediaKind.video
+                      ? 'Videoyu oynat'
+                      : 'Müziği çal',
+                ),
                 onPressed: () => _playInside(context, controller),
                 icon: Icon(
                   job.preset.kind == MediaKind.video
@@ -91,7 +95,7 @@ class JobTile extends ConsumerWidget {
                 ),
               ),
             PopupMenuButton<String>(
-              tooltip: 'İşlemler',
+              tooltip: tr('İşlemler'),
               onSelected: (value) async {
                 switch (value) {
                   case 'pause':
@@ -244,7 +248,9 @@ class JobTile extends ConsumerWidget {
         title: const Text('İndirme hatası'),
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 560),
-          child: SingleChildScrollView(child: SelectableText(error)),
+          child: SingleChildScrollView(
+            child: SelectableText(error, localize: false),
+          ),
         ),
         actions: [
           TextButton.icon(

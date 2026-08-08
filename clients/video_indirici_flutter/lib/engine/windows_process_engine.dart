@@ -31,6 +31,7 @@ class WindowsProcessDownloadEngine implements DownloadEngine {
     String cookieBrowser = 'firefox',
     String cookieProfile = '',
     String cookieFile = '',
+    String localeCode = 'tr',
   }) async {
     _cookieMode = cookieMode;
     _cookieBrowser = cookieBrowser;

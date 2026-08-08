@@ -33,6 +33,7 @@ from .constants import (
     WEBSITE_URL,
 )
 from .downloader import DownloadEngine, MetadataScanner
+from .i18n import set_language, tr, translate_widget_tree
 from .models import (
     PRESETS,
     DownloadEvent,
@@ -76,6 +77,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         self.storage = PersistenceManager()
         self.config = self.storage.load_config()
+        set_language(str(self.config.get("language", "tr")))
         self.history = self.storage.load_history()
         restored_jobs = self.storage.load_queue()
         self.events: queue.Queue[DownloadEvent] = queue.Queue()
@@ -110,16 +112,28 @@ class MainWindow(Adw.ApplicationWindow):
 
         self._install_css()
         self._build_ui()
+        self._translate_windows()
         self._populate_queue(restored_jobs)
         self._populate_history()
         self.connect("close-request", self._on_close_request)
         GLib.timeout_add(50, self._drain_events)
+        GLib.timeout_add(250, self._translate_windows)
         if self.config.get("clipboard", True):
             GLib.timeout_add(1000, self._check_clipboard)
         GLib.idle_add(self._check_dependencies)
 
     def _config_snapshot(self) -> dict[str, Any]:
         return copy.deepcopy(self.config)
+
+    def _translate_windows(self) -> bool:
+        if self._cleaned:
+            return False
+        windows = Gtk.Window.get_toplevels()
+        for index in range(windows.get_n_items()):
+            window = windows.get_item(index)
+            if window:
+                translate_widget_tree(window)
+        return True
 
     def _install_css(self) -> None:
         css = b"""
@@ -325,6 +339,8 @@ class MainWindow(Adw.ApplicationWindow):
         details = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=7)
         details.set_hexpand(True)
         self.video_title_label = Gtk.Label(label="Video bilgisi bekleniyor", xalign=0)
+        self.video_title_label._i18n_label_skip = False
+        self.video_title_label._i18n_tooltip_skip = False
         self.video_title_label.set_wrap(True)
         self.video_title_label.add_css_class("section-title")
         self.video_channel_label = Gtk.Label(label="", xalign=0)
@@ -359,6 +375,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.video_description_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN)
         self.video_description_revealer.set_transition_duration(180)
         self.video_description_label = Gtk.Label(label="", xalign=0, yalign=0, selectable=True)
+        self.video_description_label._i18n_label_skip = True
         self.video_description_label.set_wrap(True)
         self.video_description_label.add_css_class("video-meta")
         description_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -517,6 +534,8 @@ class MainWindow(Adw.ApplicationWindow):
         self.video_thumbnail.set_paintable(None)
         self.video_thumbnail_stack.set_visible_child_name("placeholder")
         self.video_placeholder_label.set_label(message)
+        self.video_title_label._i18n_label_skip = False
+        self.video_title_label._i18n_tooltip_skip = False
         self.video_title_label.set_label("Video bilgisi bekleniyor")
         self.video_channel_label.set_label("")
         self.video_properties_label.set_label("")
@@ -538,13 +557,17 @@ class MainWindow(Adw.ApplicationWindow):
         source = str(info.get("extractor_key") or info.get("extractor") or "Bilinmeyen kaynak")
         video_id = str(info.get("id") or "")
 
+        self.video_title_label._i18n_label_skip = True
+        self.video_title_label._i18n_tooltip_skip = True
         self.video_title_label.set_label(title)
         self.video_title_label.set_tooltip_text(title)
         self.video_channel_label.set_label(f"Kanal: {channel}")
         properties = [f"Süre: {duration}", f"İzlenme: {views}", f"Yayın: {upload_date}", f"Kaynak: {resolution}"]
         self.video_properties_label.set_label("   •   ".join(properties))
         self.video_source_label.set_label(f"Platform: {source}" + (f"   •   Video kimliği: {video_id}" if video_id else ""))
-        self.video_description_label.set_label(str(info.get("description") or "Açıklama bulunmuyor."))
+        description = str(info.get("description") or "")
+        self.video_description_label._i18n_label_skip = bool(description)
+        self.video_description_label.set_label(description or "Açıklama bulunmuyor.")
         self.video_description_toggle.set_active(False)
         self.video_description_toggle.set_sensitive(True)
 
@@ -858,8 +881,8 @@ class MainWindow(Adw.ApplicationWindow):
         if failed:
             text += f", {failed} hata"
         if self.config.get("notify", True):
-            notification = Gio.Notification.new("İndirme grubu tamamlandı")
-            notification.set_body(text)
+            notification = Gio.Notification.new(tr("İndirme grubu tamamlandı"))
+            notification.set_body(tr(text))
             self.get_application().send_notification(f"batch-{payload.get('batch_id')}", notification)
         self.toast_overlay.add_toast(Adw.Toast(title=text))
         folders = payload.get("folders") or []
@@ -1351,6 +1374,7 @@ class MainWindow(Adw.ApplicationWindow):
 
     def _settings_saved(self, config: dict[str, Any]) -> None:
         self.config = config
+        set_language(str(config.get("language", "tr")))
         preset_index = next(
             (index for index, preset in enumerate(PRESETS) if preset.id == config.get("default_preset")),
             0,
@@ -1359,7 +1383,8 @@ class MainWindow(Adw.ApplicationWindow):
         self.custom_format_entry.set_text(str(config.get("custom_format", "")))
         self.custom_format_entry.set_visible(PRESETS[preset_index].id == "custom")
         self.storage.save_config(config)
-        self.toast_overlay.add_toast(Adw.Toast(title="Ayarlar kaydedildi"))
+        self._translate_windows()
+        self.toast_overlay.add_toast(Adw.Toast(title=tr("Ayarlar kaydedildi")))
 
     def _action_update_ytdlp(self, *_args) -> None:
         self.toast_overlay.add_toast(Adw.Toast(title="yt-dlp güncelleniyor…"))
@@ -1390,7 +1415,7 @@ class MainWindow(Adw.ApplicationWindow):
         about.set_developer_name("ForIntX / Muhammet Burak Akkaş")
         about.set_application_icon(APP_ID)
         about.set_license_type(Gtk.License.MIT_X11)
-        about.set_comments("GTK4 / Libadwaita tabanlı yt-dlp video ve playlist indirici.")
+        about.set_comments(tr("GTK4 / Libadwaita tabanlı yt-dlp video ve playlist indirici."))
         about.set_website(WEBSITE_URL)
         about.present()
 
@@ -1407,6 +1432,11 @@ class SettingsWindow(Adw.Window):
         box.add_css_class("page")
         scroll.set_child(box)
         self.set_content(scroll)
+
+        languages = ("Türkçe", "English")
+        current_language = "English" if config.get("language") == "en" else "Türkçe"
+        self.language = self._dropdown(languages, current_language)
+        self._add_row(box, "Uygulama dili", self.language)
 
         self.folder = Gtk.Entry(text=str(config.get("folder", "")), hexpand=True)
         browse = Gtk.Button(label="Gözat")
@@ -1517,7 +1547,7 @@ class SettingsWindow(Adw.Window):
         return dropdown._values[dropdown.get_selected()]
 
     def _browse_folder(self, *_args) -> None:
-        dialog = Gtk.FileDialog(title="İndirme klasörü seç")
+        dialog = Gtk.FileDialog(title=tr("İndirme klasörü seç"))
         dialog.select_folder(self, None, self._folder_selected)
 
     def _folder_selected(self, dialog, result) -> None:
@@ -1529,7 +1559,7 @@ class SettingsWindow(Adw.Window):
             pass
 
     def _browse_cookie(self, *_args) -> None:
-        dialog = Gtk.FileDialog(title="cookies.txt seç")
+        dialog = Gtk.FileDialog(title=tr("cookies.txt seç"))
         dialog.open(self, None, self._cookie_selected)
 
     def _cookie_selected(self, dialog, result) -> None:
@@ -1565,6 +1595,7 @@ class SettingsWindow(Adw.Window):
             return
         self.config.update(
             {
+                "language": "en" if self._dropdown_value(self.language) == "English" else "tr",
                 "folder": str(folder),
                 "parallel": self._dropdown_value(self.parallel),
                 "concurrent_fragments": int(self._dropdown_value(self.fragments)),

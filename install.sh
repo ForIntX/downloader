@@ -17,12 +17,12 @@ for argument in "$@"; do
         --check) CHECK_ONLY=1 ;;
         --yes|-y) ASSUME_YES=1 ;;
         --help|-h)
-            echo "Kullanım: ./install.sh [--check] [--yes]"
-            echo "  --check  Bağımlılıkları denetler, dosya değiştirmez"
-            echo "  --yes    Eksik sistem paketlerinin kurulumunu onaylar"
+            echo "Kullanım / Usage: ./install.sh [--check] [--yes]"
+            echo "  --check  Bağımlılıkları denetler, dosya değiştirmez / Checks dependencies without changing files"
+            echo "  --yes    Eksik sistem paketlerinin kurulumunu onaylar / Approves installation of missing system packages"
             exit 0
             ;;
-        *) echo "Bilinmeyen seçenek: $argument" >&2; exit 2 ;;
+        *) echo "Bilinmeyen seçenek / Unknown option: $argument" >&2; exit 2 ;;
     esac
 done
 
@@ -43,11 +43,11 @@ if [ -z "$missing" ]; then
     fi
 fi
 
-echo "Downloader $VERSION bağımlılık kontrolü"
+echo "Downloader $VERSION bağımlılık kontrolü / dependency check"
 if [ -z "$missing" ]; then
-    echo "Tüm sistem bağımlılıkları hazır."
+    echo "Tüm sistem bağımlılıkları hazır / All system dependencies are ready."
 else
-    echo "Eksik bileşenler:$missing"
+    echo "Eksik bileşenler / Missing components:$missing"
 fi
 
 case "$DISTRO_ID" in
@@ -65,7 +65,7 @@ esac
 
 if [ "$CHECK_ONLY" -eq 1 ]; then
     if [ -n "$missing" ]; then
-        [ -n "$INSTALL_COMMAND" ] && echo "Önerilen komut: $INSTALL_COMMAND"
+        [ -n "$INSTALL_COMMAND" ] && echo "Önerilen komut / Suggested command: $INSTALL_COMMAND"
         exit 1
     fi
     exit 0
@@ -73,14 +73,14 @@ fi
 
 if [ -n "$missing" ]; then
     if [ -z "$INSTALL_COMMAND" ]; then
-        echo "Dağıtım tanınmadı. Eksik bileşenleri paket yöneticinizle kurun." >&2
+        echo "Dağıtım tanınmadı; eksikleri paket yöneticinizle kurun / Unknown distribution; install missing components with your package manager." >&2
         exit 1
     fi
-    echo "Önerilen komut: $INSTALL_COMMAND"
+    echo "Önerilen komut / Suggested command: $INSTALL_COMMAND"
     if [ "$ASSUME_YES" -eq 0 ]; then
-        printf "Bu komut şimdi çalıştırılsın mı? [e/H] "
+        printf "Bu komut şimdi çalıştırılsın mı / Run this command now? [e/y/H/N] "
         read -r answer
-        case "$answer" in e|E|y|Y) ;; *) echo "Kurulum iptal edildi."; exit 1 ;; esac
+        case "$answer" in e|E|y|Y) ;; *) echo "Kurulum iptal edildi / Installation cancelled."; exit 1 ;; esac
     fi
     sh -c "$INSTALL_COMMAND"
 fi
@@ -91,7 +91,7 @@ python3 -m venv --system-site-packages "$VENV_DIR"
 
 rm -rf "$APP_DIR/video_indirici"
 cp -R "$SCRIPT_DIR/video_indirici" "$APP_DIR/video_indirici"
-cp "$SCRIPT_DIR/app.py" "$SCRIPT_DIR/start.sh" "$SCRIPT_DIR/VERSION" "$SCRIPT_DIR/LICENSE" "$SCRIPT_DIR/README.md" "$APP_DIR/"
+cp "$SCRIPT_DIR/app.py" "$SCRIPT_DIR/start.sh" "$SCRIPT_DIR/VERSION" "$SCRIPT_DIR/LICENSE" "$SCRIPT_DIR/README.md" "$SCRIPT_DIR/README.en.md" "$APP_DIR/"
 cp "$SCRIPT_DIR/assets/$APP_ID.svg" "$ICON_DIR/$APP_ID.svg"
 
 cat > "$BIN_DIR/downloader" <<EOF
@@ -110,6 +110,6 @@ rm -f "$DESKTOP_DIR/video-indirici.desktop"
 command -v update-desktop-database >/dev/null 2>&1 && update-desktop-database "$DESKTOP_DIR" || true
 command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -f -t "$(dirname "$(dirname "$ICON_DIR")")" >/dev/null 2>&1 || true
 
-echo "Downloader $VERSION kuruldu."
-echo "Başlatmak için: $BIN_DIR/downloader"
-echo "Uygulama menüsünde 'Downloader' simgesine tıklayarak da açabilirsiniz."
+echo "Downloader $VERSION kuruldu / installed."
+echo "Başlatmak için / To start: $BIN_DIR/downloader"
+echo "Uygulama menüsündeki 'Downloader' simgesini de kullanabilirsiniz / You can also use the 'Downloader' icon in the application menu."

@@ -1,5 +1,7 @@
 # Downloader Gizlilik Politikası
 
+[Türkçe](privacy-policy-tr.md) | [English](privacy-policy-en.md)
+
 Son güncelleme: 8 Ağustos 2026
 
 Downloader kullanıcı hesabı oluşturmaz, reklam kimliği kullanmaz ve

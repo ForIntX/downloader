@@ -25,14 +25,14 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Sürüm numarasını oku
+      - name: Read version number
         shell: bash
         run: |
           APP_VERSION=$(sed -n 's/^version: \([^+]*\).*/\1/p' pubspec.yaml)
           test -n "$APP_VERSION"
           echo "APP_VERSION=$APP_VERSION" >> "$GITHUB_ENV"
 
-      - name: Play upload anahtarını hazırla
+      - name: Prepare Play upload key
         shell: bash
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}

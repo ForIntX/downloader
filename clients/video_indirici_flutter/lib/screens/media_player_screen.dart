@@ -3,11 +3,12 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 
 import '../models/download_models.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/localized_material.dart';
 import '../providers/app_controller.dart';
 import '../services/background_audio.dart';
 
@@ -156,10 +157,14 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_currentJob.title, overflow: TextOverflow.ellipsis),
+        title: Text(
+          _currentJob.title,
+          localize: false,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           IconButton(
-            tooltip: 'Harici uygulamada aç',
+            tooltip: tr('Harici uygulamada aç'),
             onPressed: _openExternally,
             icon: const Icon(Icons.open_in_new),
           ),
@@ -215,6 +220,7 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
         const SizedBox(height: 24),
         Text(
           _currentJob.title,
+          localize: false,
           maxLines: 2,
           textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
@@ -239,7 +245,7 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    tooltip: 'Önceki video',
+                    tooltip: tr('Önceki video'),
                     onPressed: _videoIndex > 0
                         ? () => _loadVideo(_videoIndex - 1)
                         : null,
@@ -248,7 +254,7 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
                   const SizedBox(width: 8),
                   IconButton.filled(
                     iconSize: 34,
-                    tooltip: value.isPlaying ? 'Duraklat' : 'Oynat',
+                    tooltip: tr(value.isPlaying ? 'Duraklat' : 'Oynat'),
                     onPressed: () =>
                         value.isPlaying ? player.pause() : player.play(),
                     icon: Icon(
@@ -257,7 +263,7 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    tooltip: 'Sonraki video',
+                    tooltip: tr('Sonraki video'),
                     onPressed: _videoIndex + 1 < _videoQueue.length
                         ? () => _loadVideo(_videoIndex + 1)
                         : null,
@@ -265,7 +271,7 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    tooltip: 'Videoyu durdur',
+                    tooltip: tr('Videoyu durdur'),
                     onPressed: () async {
                       await player.pause();
                       await player.seekTo(Duration.zero);
@@ -324,6 +330,7 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
                 const SizedBox(height: 24),
                 Text(
                   item?.title ?? _currentJob.title,
+                  localize: false,
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
@@ -338,14 +345,14 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      tooltip: 'Önceki müzik',
+                      tooltip: tr('Önceki müzik'),
                       onPressed: index > 0 ? handler.skipToPrevious : null,
                       icon: const Icon(Icons.skip_previous),
                     ),
                     const SizedBox(width: 8),
                     IconButton.filled(
                       iconSize: 34,
-                      tooltip: playback.playing ? 'Duraklat' : 'Oynat',
+                      tooltip: tr(playback.playing ? 'Duraklat' : 'Oynat'),
                       onPressed: playback.playing
                           ? handler.pause
                           : handler.play,
@@ -355,7 +362,7 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      tooltip: 'Sonraki müzik',
+                      tooltip: tr('Sonraki müzik'),
                       onPressed: index + 1 < queueLength
                           ? handler.skipToNext
                           : null,
@@ -363,7 +370,7 @@ class _MediaPlayerScreenState extends ConsumerState<MediaPlayerScreen> {
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      tooltip: 'Oynatmayı durdur',
+                      tooltip: tr('Oynatmayı durdur'),
                       onPressed: handler.stop,
                       icon: const Icon(Icons.stop_circle_outlined),
                     ),

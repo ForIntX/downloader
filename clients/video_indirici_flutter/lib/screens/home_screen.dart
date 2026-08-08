@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/download_models.dart';
 import '../core/constants.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/localized_material.dart';
 import '../providers/app_controller.dart';
 import '../widgets/marquee_text.dart';
 import '../widgets/video_info_card.dart';
@@ -93,7 +94,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 Expanded(child: _urlField(controller)),
                                 const SizedBox(width: 8),
                                 IconButton.filledTonal(
-                                  tooltip: 'Panodan yapıştır',
+                                  tooltip: tr('Panodan yapıştır'),
                                   onPressed: _pasteUrl,
                                   icon: const Icon(Icons.content_paste),
                                 ),
@@ -164,7 +165,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       TextField(
                         onChanged: controller.setFilter,
                         decoration: InputDecoration(
-                          hintText: '${state.playlist.length} video içinde ara',
+                          hintText: tr(
+                            '${state.playlist.length} video içinde ara',
+                          ),
                           prefixIcon: const Icon(Icons.search),
                         ),
                       ),
@@ -219,6 +222,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       subtitle: Text(
                         item.channel ?? item.url,
+                        localize: false,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -260,8 +264,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               Expanded(
                                 child: DropdownButtonFormField<String>(
                                   initialValue: state.presetId,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Format ve kalite',
+                                  decoration: InputDecoration(
+                                    labelText: tr('Format ve kalite'),
                                   ),
                                   items: [
                                     for (final preset in DownloadPreset.presets)
@@ -293,12 +297,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               key: const ValueKey('custom-format-field'),
                               initialValue: state.customFormat,
                               onChanged: controller.setCustomFormat,
-                              decoration: const InputDecoration(
-                                labelText: 'Özel yt-dlp formatı',
-                                hintText:
-                                    'Örn. 137+140 veya best[height<=1080]',
-                                helperText:
-                                    'Gelişmiş kullanıcılar için doğrudan format seçicisi.',
+                              decoration: InputDecoration(
+                                labelText: tr('Özel yt-dlp formatı'),
+                                hintText: tr(
+                                  'Örn. 137+140 veya best[height<=1080]',
+                                ),
+                                helperText: tr(
+                                  'Gelişmiş kullanıcılar için doğrudan format seçicisi.',
+                                ),
                               ),
                             ),
                           ],
@@ -329,7 +335,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           prefixIcon: const Icon(Icons.link),
           suffixIcon: pasteInside
               ? IconButton(
-                  tooltip: 'Panodan yapıştır',
+                  tooltip: tr('Panodan yapıştır'),
                   onPressed: _pasteUrl,
                   icon: const Icon(Icons.content_paste),
                 )

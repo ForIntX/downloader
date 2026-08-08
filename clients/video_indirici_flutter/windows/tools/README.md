@@ -1,5 +1,7 @@
 # Windows motor araçları
 
+[Türkçe](README.md) | [English](README.en.md)
+
 Release derlemesinden önce bu klasörde `yt-dlp.exe`, `deno.exe`,
 `ffmpeg.exe`, `ffprobe.exe` ve bunların lisans bildirimleri bulunmalıdır.
 

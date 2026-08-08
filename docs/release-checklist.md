@@ -1,5 +1,7 @@
 # 1.0 Beta yayın kontrol listesi
 
+[Türkçe](release-checklist.md) | [English](release-checklist-en.md)
+
 ## Android
 
 - Fiziksel ARM64 cihazda tek video MP4 ve MP3 indirme

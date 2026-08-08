@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Downloader</string>
+    <string name="download_channel">İndirmeler</string>
+    <string name="download_results_channel">İndirme sonuçları</string>
+    <string name="download_preparing">Hazırlanıyor</string>
+    <string name="download_progress">%%%1$d indirildi</string>
+    <string name="pause">Duraklat</string>
+    <string name="cancel">İptal</string>
+    <string name="download_completed">İndirme tamamlandı</string>
+    <string name="download_failed">İndirme başarısız</string>
+    <string name="shared_file">Downloader dosyası</string>
+</resources>

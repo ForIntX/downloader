@@ -43,12 +43,14 @@ class PlatformDownloadEngine implements DownloadEngine {
     String cookieBrowser = 'firefox',
     String cookieProfile = '',
     String cookieFile = '',
+    String localeCode = 'tr',
   }) async {
     _wifiOnly = wifiOnly;
     _chargingOnly = chargingOnly;
     await _methods.invokeMethod<void>('setDownloadConstraints', {
       'wifi_only': wifiOnly,
       'charging_only': chargingOnly,
+      'locale': localeCode,
     });
   }
 

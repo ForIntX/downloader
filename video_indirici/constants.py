@@ -19,11 +19,11 @@ def _read_version() -> str:
             return candidate.read_text(encoding="utf-8").strip()
         except OSError:
             continue
-    return "1.0.0-beta.1"
+    return "1.0.0-beta.2"
 
 
 APP_VERSION = _read_version()
-APP_VERSION_LABEL = "1.0 Beta" if APP_VERSION == "1.0.0-beta.1" else APP_VERSION.replace("-", " ")
+APP_VERSION_LABEL = "1.0 Beta" if APP_VERSION.startswith("1.0.0-beta.") else APP_VERSION.replace("-", " ")
 
 HOME = Path.home()
 CONFIG_DIR = Path(os.environ.get("XDG_CONFIG_HOME", HOME / ".config")) / "video-indirici"
@@ -66,6 +66,7 @@ SUB_LANG_MAP = {
 DEFAULT_CONFIG = {
     "schema_version": SCHEMA_VERSION,
     "config_version": APP_VERSION,
+    "language": "tr",
     "folder": str(DEFAULT_DOWNLOAD_DIR),
     "notify": True,
     "open_folder": False,

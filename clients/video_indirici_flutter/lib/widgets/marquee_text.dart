@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import '../l10n/localized_material.dart';
 
 class MarqueeText extends StatefulWidget {
   const MarqueeText(this.text, {super.key, this.style});
@@ -77,6 +77,7 @@ class _MarqueeTextState extends State<MarqueeText> {
         physics: const NeverScrollableScrollPhysics(),
         child: Text(
           widget.text,
+          localize: false,
           maxLines: 1,
           softWrap: false,
           style: widget.style,

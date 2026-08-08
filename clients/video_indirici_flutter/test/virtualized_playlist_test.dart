@@ -23,6 +23,7 @@ class PlaylistEngine implements DownloadEngine {
     String cookieBrowser = 'firefox',
     String cookieProfile = '',
     String cookieFile = '',
+    String localeCode = 'tr',
   }) async {}
   @override
   Future<VideoMetadata> getVideoInfo(String url) => throw UnimplementedError();

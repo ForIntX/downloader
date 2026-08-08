@@ -16,8 +16,8 @@ internal object DownloadNotifications {
     fun createChannels(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = context.getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(NotificationChannel(CHANNEL_PROGRESS, "İndirmeler", NotificationManager.IMPORTANCE_LOW))
-        manager.createNotificationChannel(NotificationChannel(CHANNEL_RESULTS, "İndirme sonuçları", NotificationManager.IMPORTANCE_DEFAULT))
+        manager.createNotificationChannel(NotificationChannel(CHANNEL_PROGRESS, AppLanguage.text(context, R.string.download_channel), NotificationManager.IMPORTANCE_LOW))
+        manager.createNotificationChannel(NotificationChannel(CHANNEL_RESULTS, AppLanguage.text(context, R.string.download_results_channel), NotificationManager.IMPORTANCE_DEFAULT))
     }
 
     fun progress(context: Context, jobId: String, title: String, percent: Int = 0): Notification {
@@ -36,20 +36,20 @@ internal object DownloadNotifications {
         return NotificationCompat.Builder(context, CHANNEL_PROGRESS)
             .setSmallIcon(android.R.drawable.stat_sys_download)
             .setContentTitle(title)
-            .setContentText(if (percent > 0) "%$percent indirildi" else "Hazırlanıyor")
+            .setContentText(if (percent > 0) AppLanguage.text(context, R.string.download_progress, percent) else AppLanguage.text(context, R.string.download_preparing))
             .setProgress(100, percent.coerceIn(0, 100), percent <= 0)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setContentIntent(openIntent)
-            .addAction(0, "Duraklat", actionIntent(DownloadActionReceiver.ACTION_PAUSE))
-            .addAction(0, "İptal", actionIntent(DownloadActionReceiver.ACTION_CANCEL))
+            .addAction(0, AppLanguage.text(context, R.string.pause), actionIntent(DownloadActionReceiver.ACTION_PAUSE))
+            .addAction(0, AppLanguage.text(context, R.string.cancel), actionIntent(DownloadActionReceiver.ACTION_CANCEL))
             .build()
     }
 
     fun result(context: Context, title: String, success: Boolean): Notification =
         NotificationCompat.Builder(context, CHANNEL_RESULTS)
             .setSmallIcon(if (success) android.R.drawable.stat_sys_download_done else android.R.drawable.stat_notify_error)
-            .setContentTitle(if (success) "İndirme tamamlandı" else "İndirme başarısız")
+            .setContentTitle(if (success) AppLanguage.text(context, R.string.download_completed) else AppLanguage.text(context, R.string.download_failed))
             .setContentText(title)
             .setAutoCancel(true)
             .build()

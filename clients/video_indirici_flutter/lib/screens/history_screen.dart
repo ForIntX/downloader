@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_localizations.dart';
+import '../l10n/localized_material.dart';
 import '../models/download_models.dart';
 import '../providers/app_controller.dart';
 import '../widgets/job_tile.dart';
@@ -77,20 +78,20 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen>
                       isScrollable: true,
                       tabAlignment: TabAlignment.start,
                       tabs: [
-                        Tab(text: 'Tümü (${history.length})'),
+                        Tab(text: tr('Tümü (${history.length})')),
                         Tab(
                           icon: const Icon(Icons.audiotrack, size: 20),
-                          text: 'Müzikler (${audio.length})',
+                          text: tr('Müzikler (${audio.length})'),
                         ),
                         Tab(
                           icon: const Icon(Icons.movie_outlined, size: 20),
-                          text: 'Videolar (${video.length})',
+                          text: tr('Videolar (${video.length})'),
                         ),
                       ],
                     ),
                   ),
                   PopupMenuButton<String>(
-                    tooltip: 'Geçmişi temizle',
+                    tooltip: tr('Geçmişi temizle'),
                     enabled: history.isNotEmpty,
                     onSelected: (value) => _confirmClear(
                       value == 'all' ? null : _selectedKind,

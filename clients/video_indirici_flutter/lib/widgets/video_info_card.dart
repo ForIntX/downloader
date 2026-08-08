@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/localized_material.dart';
 
 import '../models/download_models.dart';
 
@@ -48,13 +49,15 @@ class VideoInfoCard extends StatelessWidget {
               children: [
                 Text(
                   video.title,
+                  localize: false,
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  video.channel ?? 'Kanal bilinmiyor',
+                  video.channel ?? tr('Kanal bilinmiyor'),
+                  localize: false,
                   style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 10),
@@ -92,6 +95,7 @@ class VideoInfoCard extends StatelessWidget {
                     children: [
                       SelectableText(
                         video.description!,
+                        localize: false,
                         style: theme.textTheme.bodyMedium,
                       ),
                     ],

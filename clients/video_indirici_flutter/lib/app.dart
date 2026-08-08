@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 
 import 'core/constants.dart';
+import 'l10n/app_localizations.dart';
+import 'l10n/localized_material.dart';
 import 'providers/app_controller.dart';
 import 'screens/history_screen.dart';
 import 'screens/home_screen.dart';
@@ -20,6 +21,7 @@ class VideoIndiriciApp extends ConsumerWidget {
     final localeCode = ref.watch(
       appControllerProvider.select((state) => state.localeCode),
     );
+    setAppLanguage(localeCode);
     return MaterialApp(
       title: appName,
       debugShowCheckedModeBanner: false,
@@ -67,26 +69,26 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   var _index = 0;
 
-  static const destinations = <NavigationDestination>[
+  List<NavigationDestination> get destinations => <NavigationDestination>[
     NavigationDestination(
       icon: Icon(Icons.download_outlined),
       selectedIcon: Icon(Icons.download),
-      label: 'İndir',
+      label: tr('İndir'),
     ),
     NavigationDestination(
       icon: Icon(Icons.queue_music_outlined),
       selectedIcon: Icon(Icons.queue_music),
-      label: 'Kuyruk',
+      label: tr('Kuyruk'),
     ),
     NavigationDestination(
       icon: Icon(Icons.history),
       selectedIcon: Icon(Icons.history_toggle_off),
-      label: 'Geçmiş',
+      label: tr('Geçmiş'),
     ),
     NavigationDestination(
       icon: Icon(Icons.settings_outlined),
       selectedIcon: Icon(Icons.settings),
-      label: 'Ayarlar',
+      label: tr('Ayarlar'),
     ),
   ];
 

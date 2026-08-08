@@ -1,5 +1,7 @@
 # Downloader Flutter istemcisi
 
+[Türkçe](README.md) | [English](README.en.md)
+
 Android ve Windows için ortak Flutter arayüzü. Linux GTK uygulaması depo
 kökünde ayrı olarak korunur.
 

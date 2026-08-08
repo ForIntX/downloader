@@ -13,6 +13,7 @@ class FakeEngine implements DownloadEngine {
   bool wifiOnly = false;
   bool chargingOnly = false;
   String cookieMode = 'none';
+  String localeCode = 'tr';
   int videoInfoRequests = 0;
   String? openedLocation;
 
@@ -26,10 +27,12 @@ class FakeEngine implements DownloadEngine {
     String cookieBrowser = 'firefox',
     String cookieProfile = '',
     String cookieFile = '',
+    String localeCode = 'tr',
   }) async {
     this.wifiOnly = wifiOnly;
     this.chargingOnly = chargingOnly;
     this.cookieMode = cookieMode;
+    this.localeCode = localeCode;
   }
 
   @override
@@ -115,6 +118,13 @@ void main() {
     expect(engine.chargingOnly, isTrue);
     expect(await database.getSetting('wifi_only'), 'true');
     expect(await database.getSetting('charging_only'), 'true');
+  });
+
+  test('İngilizce dil tercihi kalıcıdır ve motora aktarılır', () async {
+    await controller.setLocale('en');
+    expect(controller.state.localeCode, 'en');
+    expect(engine.localeCode, 'en');
+    expect(await database.getSetting('locale'), 'en');
   });
 
   test('gelişmiş indirme ayarları işe sabitlenir', () async {
