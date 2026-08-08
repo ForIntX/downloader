@@ -69,9 +69,9 @@ The Play AAB workflow expects two GitHub Actions secrets:
 ## Windows
 
 The Windows client uses the same Flutter interface. Its workflow downloads
-`yt-dlp.exe`, Deno, and FFmpeg, then creates both a portable ZIP and an Inno
-Setup installer. The workflow runs only when manually started and never creates
-a release or pushes automatically.
+`yt-dlp.exe`, Deno, and LGPL FFmpeg, then creates both a portable ZIP and an
+Inno Setup installer. Run **Windows packages** manually on the Actions page to
+test the Windows package.
 
 Firefox, Chrome, Edge, and Brave profiles and a manually selected `cookies.txt`
 file are supported. Cookie contents are not written to the database or logs.
@@ -126,6 +126,9 @@ flutter test
 
 Turkish and English privacy and Play Store preparation documents are under
 `docs/`.
+
+On GitHub, **Publish platform release** builds the Linux, Android, and Windows
+packages for an existing version tag and publishes them under one Release.
 
 Website: [muhammetburakakkas.com](https://muhammetburakakkas.com)
 

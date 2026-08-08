@@ -1,0 +1,146 @@
+name: Publish platform release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to publish (for example 1.0.0-beta.2)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Verify and package Linux application
+        shell: bash
+        run: |
+          test "$(cat VERSION)" = "${{ inputs.tag }}"
+          package="Downloader-${{ inputs.tag }}-Linux"
+          mkdir -p "$package"
+          cp -R app.py video_indirici assets start.sh install.sh uninstall.sh VERSION LICENSE README.md README.en.md SECURITY.md SECURITY.en.md "$package/"
+          tar -czf "$package.tar.gz" "$package"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: downloader-linux-${{ inputs.tag }}
+          path: Downloader-${{ inputs.tag }}-Linux.tar.gz
+          if-no-files-found: error
+
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: clients/video_indirici_flutter
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.7
+          channel: stable
+          cache: true
+      - name: Prepare Android signing key
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEY_PROPERTIES: ${{ secrets.ANDROID_KEY_PROPERTIES }}
+        run: |
+          test -n "$KEYSTORE_BASE64"
+          test -n "$KEY_PROPERTIES"
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          echo "$KEY_PROPERTIES" > android/key.properties
+      - name: Test and build signed APK and AAB
+        run: |
+          flutter pub get
+          dart analyze lib test
+          flutter test
+          flutter build apk --release --target-platform android-arm64,android-x64
+          flutter build appbundle --release --target-platform android-arm64,android-x64
+      - name: Name Android packages
+        shell: bash
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk "Downloader-${{ inputs.tag }}-Android.apk"
+          cp build/app/outputs/bundle/release/app-release.aab "Downloader-${{ inputs.tag }}-Android.aab"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: downloader-android-${{ inputs.tag }}
+          path: |
+            clients/video_indirici_flutter/Downloader-${{ inputs.tag }}-Android.apk
+            clients/video_indirici_flutter/Downloader-${{ inputs.tag }}-Android.aab
+          if-no-files-found: error
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: clients/video_indirici_flutter
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.7
+          channel: stable
+          cache: true
+      - name: Download Windows engine tools
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force windows/tools | Out-Null
+          Invoke-WebRequest https://github.com/yt-dlp/yt-dlp/releases/download/2026.01.29/yt-dlp.exe -OutFile windows/tools/yt-dlp.exe
+          Invoke-WebRequest https://github.com/denoland/deno/releases/latest/download/deno-x86_64-pc-windows-msvc.zip -OutFile deno.zip
+          Expand-Archive deno.zip windows/tools
+          Invoke-WebRequest https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n8.1-latest-win64-lgpl-8.1.zip -OutFile ffmpeg.zip
+          Expand-Archive ffmpeg.zip ffmpeg-expanded
+          Copy-Item (Get-ChildItem ffmpeg-expanded -Recurse -Filter ffmpeg.exe | Select-Object -First 1).FullName windows/tools/ffmpeg.exe
+          Copy-Item (Get-ChildItem ffmpeg-expanded -Recurse -Filter ffprobe.exe | Select-Object -First 1).FullName windows/tools/ffprobe.exe
+          Copy-Item assets/third_party_licenses.txt windows/tools/THIRD_PARTY_LICENSES.txt
+          Copy-Item assets/third_party_licenses.en.txt windows/tools/THIRD_PARTY_LICENSES.en.txt
+      - name: Test and build Windows application
+        run: |
+          flutter pub get
+          dart analyze lib test
+          flutter test
+          flutter build windows --release
+      - name: Create portable ZIP and installer
+        shell: pwsh
+        run: |
+          Compress-Archive build/windows/x64/runner/Release/* "Downloader-${{ inputs.tag }}-Windows.zip"
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" packaging/windows/video_indirici.iss
+      - uses: actions/upload-artifact@v4
+        with:
+          name: downloader-windows-${{ inputs.tag }}
+          path: |
+            clients/video_indirici_flutter/Downloader-${{ inputs.tag }}-Windows.zip
+            clients/video_indirici_flutter/dist/*.exe
+          if-no-files-found: error
+
+  publish:
+    needs: [linux, android, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          cat "docs/releases/${{ inputs.tag }}.md" "docs/releases/${{ inputs.tag }}.en.md" > release-notes.md
+          gh release create "${{ inputs.tag }}" release-assets/* --verify-tag --prerelease --title "Downloader ${{ inputs.tag }}" --notes-file release-notes.md

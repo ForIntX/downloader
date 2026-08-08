@@ -70,9 +70,9 @@ Play AAB iş akışı iki GitHub Actions secret'ı bekler:
 ## Windows
 
 Windows istemcisi aynı Flutter arayüzünü kullanır. Windows iş akışı
-`yt-dlp.exe`, Deno ve FFmpeg araçlarını indirir; ardından hem taşınabilir
-ZIP hem Inno Setup kurulum dosyası oluşturur. İş akışı yalnızca elle
-başlatılır ve otomatik release/push yapmaz.
+`yt-dlp.exe`, Deno ve LGPL FFmpeg araçlarını indirir; ardından hem taşınabilir
+ZIP hem Inno Setup kurulum dosyası oluşturur. Actions sayfasındaki
+**Windows packages** iş akışı elle çalıştırılarak Windows paketi test edilebilir.
 Firefox, Chrome, Edge ve Brave profilleri ile elle belirtilen `cookies.txt`
 dosyası desteklenir; çerez içeriği veritabanına veya loglara yazılmaz.
 
@@ -127,6 +127,9 @@ flutter test
 
 Gizlilik ve Play Store hazırlık belgelerinin Türkçe ve İngilizce
 sürümleri `docs/` altındadır.
+
+GitHub'da **Publish platform release** iş akışı bir sürüm etiketi için
+Linux, Android ve Windows paketlerini oluşturup tek Release altında yayınlar.
 
 Website: [muhammetburakakkas.com](https://muhammetburakakkas.com)
 

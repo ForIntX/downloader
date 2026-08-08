@@ -27,4 +27,5 @@
 - Müzik/video geçmiş filtreleri ve kategori bazlı temizleme
 - GStreamer codec paketleriyle MP3, M4A, Opus ve MP4 oynatma
 
-Hiçbir iş akışı GitHub release oluşturmaz veya mağazaya otomatik yükleme yapmaz.
+`Publish platform release` iş akışı yalnızca elle başlatıldığında GitHub
+Release oluşturur. Hiçbir iş akışı mağazaya otomatik yükleme yapmaz.

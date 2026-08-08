@@ -30,4 +30,5 @@
 - MP3, M4A, Opus, and MP4 playback using GStreamer codec packages
 - Turkish/English language switching, including settings and dialogs
 
-No workflow creates a GitHub release or automatically uploads to a store.
+The `Publish platform release` workflow creates a GitHub Release only when
+manually started. No workflow automatically uploads to a store.
